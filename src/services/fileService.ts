@@ -1,6 +1,15 @@
 import apiClient from './baseService';
 import { toast } from 'react-toastify';
 
+interface ShareFileAccessRequest {
+  email: string;
+  permission: 'view' | 'edit';
+}
+
+interface GetFilesByFolderParams {
+  name?: string;
+}
+
 export const FileService = {
   async uploadFile(file: File, isPublic: boolean, folderId?: number) {
     const formData = new FormData();
@@ -55,11 +64,9 @@ export const FileService = {
   },
 
   async shareFileAccess(fileId: number, email: string, permission: 'view' | 'edit') {
+    const data: ShareFileAccessRequest = { email, permission };
     try {
-      const response = await apiClient.post(`/files/${fileId}/share`, {
-        email,
-        permission,
-      });
+      const response = await apiClient.post(`/files/${fileId}/share`, data);
 
       return response.data;
     } catch (error) {
@@ -69,18 +76,17 @@ export const FileService = {
 
   async getFilesByFolderId(folderId: number | null, name?: string) {
     try {
-      const params: Record<string, any> = {};
-      const id = folderId ?? 0;
+      const params: GetFilesByFolderParams = {};
 
       if (name) {
         params.name = name;
       }
 
+      const id = folderId ?? 0;
       const response = await apiClient.get(`/files/by-folder/${id}`, { params });
       return response.data;
     } catch (error) {
       throw error;
     }
   },
-
 };

@@ -1,10 +1,11 @@
 import { makeAutoObservable } from "mobx";
 import { FileService } from "services/fileService";
 import { toast } from "react-toastify";
-import { folderStore } from "./folderStore";
+import { folderStore } from "stores/folderStore";
+import { File as FileType } from "types/fileTypes";
 
 class FileStore {
-  files: any[] = [];
+  files: FileType[] = [];
   isLoading: boolean = false;
   isUploadFileModalOpen: boolean = false;
 

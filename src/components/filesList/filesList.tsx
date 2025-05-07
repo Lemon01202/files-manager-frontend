@@ -1,35 +1,35 @@
 import React, { useState } from 'react';
 import { Box, Typography, IconButton } from '@mui/material';
 import { Add } from '@mui/icons-material';
-import { File } from 'types/fileTypes';
+import { File as FileType } from 'types/fileTypes';
 import FileItem from "components/filesList/fileItem/fileItem";
 import FilePreviewModal from "components/modals/filePreviewModal";
 import DeleteFileModal from "components/modals/deleteFileModal";
 import ShareFileModal from "components/modals/shareFileModal";
 import UploadFileModal from "components/modals/uploadFileModal";
-import {fileStore} from "../../stores/fileStore";
-import {folderStore} from "../../stores/folderStore";
+import {fileStore} from "stores/fileStore";
+import {folderStore} from "stores/folderStore";
 
 interface FileListProps {
-  files: File[];
+  files: FileType[];
   handleOpenUploadFileModal: (state: boolean) => void;
   onDeleteFile: (fileId: number) => void;
-  onEditFile: (fileId: number, file: File, isPublic: boolean) => void;
-  onShareFileAccess: (fileId: number, email: string, permission: 'view' | 'edit') => void;
+  onEditFile: (fileId: number, file: FileType, isPublic: boolean) => void;
+  onShareFileAccess: (fileId: number, email: string, permission: "view" | "edit") => void;
   onSetFilePrivacy: (fileId: number, isPublic: boolean) => void;
 }
 
 const FilesList: React.FC<FileListProps> = React.memo(
   ({ files, onDeleteFile, onEditFile, onShareFileAccess, onSetFilePrivacy }) => {
-    const [selectedFile, setSelectedFile] = useState<File | null>(null);
+    const [selectedFile, setSelectedFile] = useState<FileType | null>(null);
     const [isPreviewModalOpen, setIsPreviewModalOpen] = useState(false);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [isShareModalOpen, setIsShareModalOpen] = useState(false);
-    const [fileToDelete, setFileToDelete] = useState<File | null>(null);
-    const [fileToShare, setFileToShare] = useState<File | null>(null);
-    const [editingFile, setEditingFile] = useState<File | null>(null);
+    const [fileToDelete, setFileToDelete] = useState<FileType | null>(null);
+    const [fileToShare, setFileToShare] = useState<FileType | null>(null);
+    const [editingFile, setEditingFile] = useState<FileType | null>(null);
 
-    const backendUrl = process.env.REACT_APP_BACKEND_URL || '';
+    const backendUrl = process.env.REACT_APP_BACKEND_URL || "";
 
     const handleSaveEdit = (fileId: number, fileName: string, isPublic: boolean) => {
       const updatedFile = files.find((file) => file.id === fileId);
@@ -43,7 +43,7 @@ const FilesList: React.FC<FileListProps> = React.memo(
       setEditingFile(null);
     };
 
-    const handleEditFile = React.useCallback((fileId: number, file: any, isPublic: boolean) => {
+    const handleEditFile = React.useCallback((fileId: number, file: File | null, isPublic: boolean) => {
       fileStore.updateFile(fileId, file, { isPublic });
     }, []);
 
@@ -51,7 +51,7 @@ const FilesList: React.FC<FileListProps> = React.memo(
       fileStore.setUploadFileModalOpen(state);
     }, []);
 
-    const handleUploadFile = async (file: any, isPublic: boolean = false) => {
+    const handleUploadFile = async (file: File | null, isPublic: boolean = false) => {
       await fileStore.uploadFile(file, isPublic, folderStore.currentFolderId);
       handleOpenUploadFileModal(false);
     };

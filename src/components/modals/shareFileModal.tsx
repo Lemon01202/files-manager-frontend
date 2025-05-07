@@ -2,8 +2,8 @@ import React from 'react';
 import { TextField, MenuItem } from '@mui/material';
 import CommonModal from 'components/modals/commonModal';
 import ModalActions from 'components/modalActions/modalActions';
-import { Formik, Form, Field } from 'formik';
-import {shareFileValidationSchema} from "../../validation/shareFile";
+import { Formik, Form, Field, FormikHelpers } from 'formik';
+import { shareFileValidationSchema } from 'validation/shareFile';
 
 interface ShareFileModalProps {
   isOpen: boolean;
@@ -11,13 +11,21 @@ interface ShareFileModalProps {
   onConfirm: (email: string, permission: 'view' | 'edit') => void;
 }
 
+interface ShareFileFormValues {
+  email: string;
+  permission: 'view' | 'edit';
+}
+
 const ShareFileModal: React.FC<ShareFileModalProps> = ({ isOpen, onClose, onConfirm }) => {
-  const initialValues = {
+  const initialValues: ShareFileFormValues = {
     email: '',
-    permission: 'view' as 'view' | 'edit',
+    permission: 'view',
   };
 
-  const handleSubmit = (values: typeof initialValues, { resetForm }: any) => {
+  const handleSubmit = (
+    values: ShareFileFormValues,
+    { resetForm }: FormikHelpers<ShareFileFormValues>
+  ) => {
     onConfirm(values.email, values.permission);
     resetForm();
   };
@@ -35,7 +43,7 @@ const ShareFileModal: React.FC<ShareFileModalProps> = ({ isOpen, onClose, onConf
         validationSchema={shareFileValidationSchema}
         onSubmit={handleSubmit}
       >
-        {({ values, errors, touched, handleChange, handleBlur }) => (
+        {({ values, errors, touched, handleChange, handleBlur, handleSubmit }) => (
           <Form>
             <Field
               as={TextField}
@@ -69,7 +77,7 @@ const ShareFileModal: React.FC<ShareFileModalProps> = ({ isOpen, onClose, onConf
               <MenuItem value="edit">Edit</MenuItem>
             </Field>
             <ModalActions
-              onConfirm={() => handleSubmit(values, { resetForm: () => {} })}
+              onConfirm={() => handleSubmit()}
               onCancel={onClose}
               confirmText="Share"
               cancelText="Cancel"

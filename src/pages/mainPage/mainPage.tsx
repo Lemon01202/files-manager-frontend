@@ -55,7 +55,7 @@ const MainPage: React.FC = observer(() => {
     fileStore.setFilePrivacy(fileId, isPublic);
   }, []);
 
-  const handleUploadFile = async (file: any, isPublic: boolean = false) => {
+  const handleUploadFile = async (file: File | null, isPublic: boolean = false) => {
     await fileStore.uploadFile(file, isPublic, folderStore.currentFolderId);
     handleOpenUploadFileModal(false);
   };
